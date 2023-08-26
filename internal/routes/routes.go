@@ -1,8 +1,10 @@
+// All the routes are defined here
+
 package routes
 
 import (
 	"net/http"
-	"user-auth/controllers"
+	"user-auth/internal/controllers"
 
 	"github.com/gorilla/mux"
 )

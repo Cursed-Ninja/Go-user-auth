@@ -3,14 +3,16 @@ package config
 import (
 	"database/sql"
 	"fmt"
-	"user-auth/config/viper"
+	"user-auth/internal/config/viper"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
+// Creating a db variable of type *sql.DB
 var db *sql.DB
 
 func Connect() {
+	// Getting the database credentials from config file
 	username := viper.Get("database.username")
 	password := viper.Get("database.password")
 	port := viper.Get("database.port")
