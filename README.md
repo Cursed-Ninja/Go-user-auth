@@ -1,45 +1,45 @@
-**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
+## Setting up the project
 
-When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
+Clone the repository in your local machine using the below command.
 
-*We recommend that you open this README in another tab as you perform the tasks below. You can [watch our video](https://youtu.be/0ocf7u76WSo) for a full demo of all the steps in this tutorial. Open the video in a new tab to avoid leaving Bitbucket.*
+```bash
+git clone https://cursed_ninja@bitbucket.org/user-auth/user-auth.git
+```
 
----
+## Setting up the environment variables
 
-## Edit a file
+Create a config.yml file in the ```/user-auth/internal/config directory```. Add the following fields and update the values when necessary:
 
-You’ll start by editing this README file to learn how to edit a file in Bitbucket.
+```
+google_oauth:
+  client_id: "your_client_id"
+  client_secret: "your_client_secret"
+  redirect_uri: http://localhost:8080/auth/google/callback
 
-1. Click **Source** on the left side.
-2. Click the README.md link from the list of files.
-3. Click the **Edit** button.
-4. Delete the following text: *Delete this line to make a change to the README from Bitbucket.*
-5. After making your change, click **Commit** and then **Commit** again in the dialog. The commit page will open and you’ll see the change you just made.
-6. Go back to the **Source** page.
+database:
+  username: "your_username"
+  password: "your_password"
+  port: "your_port"
+  database: "your_database_name"
 
----
+session:
+  name: "your_session_name"
+  secret: "your_session_secret"
 
-## Create a file
+```
 
-Next, you’ll add a new file to this repository.
+## Starting the server
 
-1. Click the **New file** button at the top of the **Source** page.
-2. Give the file a filename of **contributors.txt**.
-3. Enter your name in the empty file space.
-4. Click **Commit** and then **Commit** again in the dialog.
-5. Go back to the **Source** page.
+To start the server, first open the ```/user-auth/cmd/main``` directory in the terminal and then run the below command.
 
-Before you move on, go ahead and explore the repository. You've already seen the **Source** page, but check out the **Commits**, **Branches**, and **Settings** pages.
+```bash
+go run main.go
+```
 
----
+## Structure
 
-## Clone a repository
-
-Use these steps to clone from SourceTree, our client for using the repository command-line free. Cloning allows you to work on your files locally. If you don't yet have SourceTree, [download and install first](https://www.sourcetreeapp.com/). If you prefer to clone from the command line, see [Clone a repository](https://confluence.atlassian.com/x/4whODQ).
-
-1. You’ll see the clone button under the **Source** heading. Click that button.
-2. Now click **Check out in SourceTree**. You may need to create a SourceTree account or log in.
-3. When you see the **Clone New** dialog in SourceTree, update the destination path and name if you’d like to and then click **Clone**.
-4. Open the directory you just created to see your repository’s files.
-
-Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
+1. The server starts from the main.go file in the ```/user-auth/cmd/main``` directory.
+2. Database connection is establised in the ```/user-auth/internal/config/config.go``` file.
+3. The routes are defined in the ```/user-auth/internal/routes/routes.go``` file.
+4. The controllers are defined in the ```/user-auth/internal/controllers``` directory.
+5. The models are defined in the ```/user-auth/internal/models``` directory.
