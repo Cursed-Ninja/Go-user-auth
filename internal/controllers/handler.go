@@ -152,6 +152,8 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	session.Values["email"] = newUser.Email
+	session.Save(r, w)
 
 	http.Redirect(w, r, "/profile", http.StatusSeeOther)
 }
