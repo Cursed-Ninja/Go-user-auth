@@ -57,7 +57,7 @@
             </div>
             <div>
                 <label for="email">Email:</label>
-                <input type="text" id="email" name="email" value="{{ .Email }}" required><br>
+                <input type="text" id="email" name="email" value="{{ .Email }}" required {{if .GoogleOauth}}disabled{{end}}><br>
             </div>
             <div>
                 <label for="phone">Phone:</label>
