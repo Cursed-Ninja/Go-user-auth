@@ -51,16 +51,43 @@
     <div class="login-container">
         <h2>Login</h2>
         <form action="/login" method="POST">
-            <label for="email">Email:</label>
+            <label for="email"> Username (Email):</label>
             <input type="text" id="email" name="email" required><br>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required><br>
             <button type="submit">Login</button>
-            <a href="/oauth/google/login"><button type="button" style="background-color: #4285F4;">Login with
+            <a href="/oauth/google"><button type="button" style="background-color: #4285F4;">Login/Signup with
                     Google</button></a>
         </form>
         <a href="/register"><button>Create an account</button></a>
     </div>
+    <script>
+        const queryParams = new URLSearchParams(window.location.search);
+        if (queryParams.has('error') && queryParams.get('error') === '409') {
+            alert('Incorrect method. Try logging in using email')
+            window.location.href = '/login';
+        }
+        const handleSubmit = async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+            try {
+                const res = await fetch(form.action, {
+                    method: form.method,
+                    body: formData,
+                });
+                if (!res.ok) {
+                    const message = await res.text();
+                    throw new Error(message);
+                } else {
+                    window.location.href = '/profile';
+                }
+            } catch (err) {
+                alert(err.message)
+            }
+        }
+        document.querySelector('form').addEventListener('submit', handleSubmit)
+    </script>
 </body>
 
 </html>

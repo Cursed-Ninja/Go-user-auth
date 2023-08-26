@@ -56,8 +56,9 @@
                 <input type="text" id="full-name" name="name" value="{{ .Name }}"><br>
             </div>
             <div>
-                <label for="email">Email:</label>
-                <input type="text" id="email" name="email" value="{{ .Email }}" required {{if .GoogleOauth}}disabled{{end}}><br>
+                <label for="email">Username (Email):</label>
+                <input type="text" id="email" name="email" value="{{ .Email }}" required {{if
+                    .GoogleOauth}}disabled{{end}}><br>
             </div>
             <div>
                 <label for="phone">Phone:</label>

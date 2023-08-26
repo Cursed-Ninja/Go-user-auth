@@ -18,7 +18,7 @@ var (
 
 func LoginUserHandler(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, sessionName)
-	err := r.ParseForm()
+	err := r.ParseMultipartForm(32 << 20)
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -32,13 +32,13 @@ func LoginUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Println(err)
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, "Username entered does not exist", http.StatusNotFound)
 		return
 	}
 
 	if user.SignInMethod != "email" {
 		log.Println(err)
-		w.WriteHeader(http.StatusConflict)
+		http.Error(w, "Incorrect method. Try logging in using Google", http.StatusConflict)
 		return
 	}
 
@@ -46,7 +46,7 @@ func LoginUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Println(err)
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, "Password is incorrect", http.StatusBadRequest)
 		return
 	}
 
@@ -59,7 +59,7 @@ func LoginUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
+	err := r.ParseMultipartForm(32 << 20)
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -76,7 +76,8 @@ func RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 
 	if newUser.Email == "" || password == "" {
-		w.WriteHeader(http.StatusBadRequest)
+		log.Println("Please provide username and password")
+		http.Error(w, "Please provide username and password", http.StatusBadRequest)
 		return
 	}
 
@@ -87,21 +88,13 @@ func RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = models.GetUserDetails(newUser.Email)
-
-	if err == nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusConflict)
-		return
-	}
-
 	newUser.Password = hashedPassword
 
 	err = newUser.RegisterUser()
 
 	if err != nil {
 		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, "User already exists, try logging in", http.StatusBadRequest)
 		return
 	}
 
@@ -150,13 +143,13 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/profile", http.StatusSeeOther)
 }
 
-func GoogleOauthLoginHandler(w http.ResponseWriter, r *http.Request) {
-	url := oAuth.GoogleOauth("login")
+func GoogleOauthHandler(w http.ResponseWriter, r *http.Request) {
+	url := oAuth.GoogleOauth()
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
 
-func CallbackLoginHandler(w http.ResponseWriter, r *http.Request) {
-	userInfo, err := oAuth.Callback(r, "login")
+func CallbackHandler(w http.ResponseWriter, r *http.Request) {
+	userInfo, err := oAuth.Callback(r)
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -164,16 +157,26 @@ func CallbackLoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user, err := models.GetUserDetails(userInfo.Email)
-
+	isNewUser := false
 	if err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusConflict)
-		return
+		newUser := models.User{}
+		newUser.Email = userInfo.Email
+		newUser.Name = userInfo.Name
+		newUser.SignInMethod = "google"
+		err = newUser.RegisterUser()
+
+		if err != nil {
+			log.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		isNewUser = true
 	}
 
-	if user.SignInMethod != "google" {
+	if !isNewUser && user.SignInMethod != "google" {
 		log.Println(err)
-		w.WriteHeader(http.StatusConflict)
+		http.Redirect(w, r, "/login?error=409", http.StatusSeeOther)
 		return
 	}
 
@@ -183,50 +186,13 @@ func CallbackLoginHandler(w http.ResponseWriter, r *http.Request) {
 	session.Values["googleOauth"] = false
 	session.Save(r, w)
 
-	http.Redirect(w, r, "/profile", http.StatusSeeOther)
-}
-
-func GoogleOauthRegisterHandler(w http.ResponseWriter, r *http.Request) {
-	url := oAuth.GoogleOauth("register")
-	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
-}
-
-func CallbackRegisterHandler(w http.ResponseWriter, r *http.Request) {
-	userInfo, err := oAuth.Callback(r, "register")
-	if err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+	var url string
+	if isNewUser {
+		url = "/edit-details"
+	} else {
+		url = "/profile"
 	}
-
-	user, err := models.GetUserDetails(userInfo.Email)
-
-	if err == nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusConflict)
-		return
-	}
-
-	user.Email = userInfo.Email
-	user.Name = userInfo.Name
-	user.SignInMethod = "google"
-
-	err = user.RegisterUser()
-
-	if err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	session, _ := store.Get(r, sessionName)
-
-	session.Values["authenticated"] = true
-	session.Values["email"] = user.Email
-	session.Values["googleOauth"] = true
-	session.Save(r, w)
-
-	http.Redirect(w, r, "/edit-details", http.StatusSeeOther)
+	http.Redirect(w, r, url, http.StatusSeeOther)
 }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
@@ -237,7 +203,8 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := session.Save(r, w)
 	if err != nil {
-		http.Error(w, "Failed to save session", http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

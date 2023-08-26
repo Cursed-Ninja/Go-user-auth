@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 	"user-auth/config"
 	"user-auth/routes"
-	"os"
 
 	"github.com/gorilla/mux"
 )

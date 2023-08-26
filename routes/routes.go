@@ -15,10 +15,8 @@ var RegisterUserRoutes = func(router *mux.Router) {
 	router.HandleFunc("/update-profile", controllers.UpdateUserHandler).Methods(http.MethodPost)
 	router.HandleFunc("/edit-details", controllers.EditUser).Methods(http.MethodGet)
 	router.HandleFunc("/profile", controllers.GetUser).Methods(http.MethodGet)
-	router.HandleFunc("/oauth/google/login", controllers.GoogleOauthLoginHandler).Methods(http.MethodGet)
-	router.HandleFunc("/oauth/callback/login", controllers.CallbackLoginHandler).Methods(http.MethodGet)
-	router.HandleFunc("/oauth/google/register", controllers.GoogleOauthRegisterHandler).Methods(http.MethodGet)
-	router.HandleFunc("/oauth/callback/register", controllers.CallbackRegisterHandler).Methods(http.MethodGet)
+	router.HandleFunc("/oauth/google", controllers.GoogleOauthHandler).Methods(http.MethodGet)
+	router.HandleFunc("/oauth/callback", controllers.CallbackHandler).Methods(http.MethodGet)
 	router.HandleFunc("/logout", controllers.LogoutHandler).Methods(http.MethodGet)
 	router.HandleFunc("/", controllers.LoginUser).Methods(http.MethodGet)
 }
