@@ -13,7 +13,6 @@ import (
 )
 
 var (
-	user        models.User
 	store       = sessions.NewCookieStore([]byte(viper.Get("session.secret")))
 	sessionName = viper.Get("session.name")
 )
