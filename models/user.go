@@ -43,8 +43,8 @@ func GetUserDetails(email string) (User, error) {
 	return user, err
 }
 
-func (u *User) UpdateUser() error {
+func (u *User) UpdateUser(previousEmail string) error {
 	query := "UPDATE users SET name=?, email=?, phone=? WHERE email=?"
-	_, err := db.Exec(query, u.Name, u.Email, u.Phone, u.Email)
+	_, err := db.Exec(query, u.Name, u.Email, u.Phone, previousEmail)
 	return err
 }
