@@ -42,8 +42,8 @@ func EditUser(w http.ResponseWriter, r *http.Request) {
 	user.Password = nil
 
 	if err != nil {
-		log.Println(err, email, user)
-		w.WriteHeader(http.StatusBadRequest)
+		log.Println(err)
+		http.Error(w, "User does not exists", http.StatusBadRequest)
 		return
 	}
 

@@ -43,7 +43,7 @@ func LoginUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	// If user is not registered using email and password, then return error
 	if user.SignInMethod != "email" {
-		log.Println(err)
+		log.Println("Incorrect login method")
 		http.Error(w, "Incorrect method. Try logging in using Google", http.StatusConflict)
 		return
 	}
@@ -128,7 +128,7 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := r.ParseForm()
+	err := r.ParseMultipartForm(32 << 20)
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -149,7 +149,7 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, "User already exists with the submitted email", http.StatusBadRequest)
 		return
 	}
 	session.Values["email"] = newUser.Email
@@ -198,15 +198,15 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 
 	// If user is not registered using google, then return error
 	if !isNewUser && user.SignInMethod != "google" {
-		log.Println(err)
+		log.Println("Incorrect login method")
 		http.Redirect(w, r, "/login?error=409", http.StatusSeeOther)
 		return
 	}
-	
+
 	// Setting the session
 	session, _ := store.Get(r, sessionName)
 	session.Values["authenticated"] = true
-	session.Values["email"] = user.Email
+	session.Values["email"] = userInfo.Email
 	session.Values["googleOauth"] = true
 	session.Save(r, w)
 

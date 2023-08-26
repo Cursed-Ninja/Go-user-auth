@@ -67,6 +67,28 @@
             <button type="submit">Save & Continue</button>
         </form>
         <a href="/profile"><button>Cancel</button></a>
+        <script>
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                const form = e.target;
+                const formData = new FormData(form);
+                try {
+                    const res = await fetch(form.action, {
+                        method: form.method,
+                        body: formData,
+                    });
+                    if (!res.ok) {
+                        const message = await res.text();
+                        throw new Error(message);
+                    } else {
+                        window.location.href = '/profile';
+                    }
+                } catch (err) {
+                    alert(err.message)
+                }
+            }
+            document.querySelector('form').addEventListener('submit', handleSubmit)
+        </script>
     </div>
 </body>
 
