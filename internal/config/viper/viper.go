@@ -5,11 +5,11 @@ import (
 )
 
 func init() {
-	// viper.SetConfigName("config")
-	// viper.SetConfigType("yml")
+	viper.SetConfigName("config")
+	viper.SetConfigType("yml")
 	// Using env variables for config file path as render does not support yml files as env
-	viper.SetConfigName(".env")
-	viper.SetConfigType("env")
+	// viper.SetConfigName(".env")
+	// viper.SetConfigType("env")
 	viper.AddConfigPath("../../")
 	viper.AddConfigPath("../../etc/secrets")
 
