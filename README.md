@@ -3,12 +3,12 @@
 Clone the repository in your local machine using the below command.
 
 ```bash
-git clone https://cursed_ninja@bitbucket.org/user-auth/user-auth.git
+git clone https://github.com/Cursed-Ninja/Go-user-auth.git
 ```
 
 ## Setting up the environment variables
 
-Create a config.yml file in the `/user-auth/internal/config directory`. Add the following fields and update the values when necessary:
+Create a config.yml file in the `/user-auth/etc/secrets directory`. Add the following fields and update the values when necessary:
 
 ```
 google_oauth:
@@ -19,6 +19,7 @@ google_oauth:
 database:
   username: "your_username"
   password: "your_password"
+  host: "your_host"
   port: "your_port"
   database: "your_database_name"
 

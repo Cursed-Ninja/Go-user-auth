@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"user-auth/internal/config"
+	"user-auth/internal/config/viper"
 	"user-auth/internal/routes"
 
 	"github.com/gorilla/mux"
@@ -14,14 +15,18 @@ import (
 
 func main() {
 	// Setting up log file to log all the outputs
-	logFile, err := os.Create("logfile.txt")
-	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
-	if err != nil {
-		panic(err)
+
+	if logToFile := viper.Get("log.log_to_file"); logToFile == "true" {
+		logFile, err := os.Create("logfile.txt")
+		if err != nil {
+			panic(err)
+		}
+		defer logFile.Close()
+		log.SetOutput(logFile)
 	}
-	defer logFile.Close()
+	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+
 	defer config.Disconnect()
-	log.SetOutput(logFile)
 
 	// Setting up mux router for routing
 	r := mux.NewRouter()
