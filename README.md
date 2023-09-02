@@ -44,3 +44,7 @@ go run main.go
 3. The routes are defined in the `/user-auth/internal/routes/routes.go` file.
 4. The controllers are defined in the `/user-auth/internal/controllers` directory.
 5. The models are defined in the `/user-auth/internal/models` directory.
+
+## Notes
+
+1. Uncomment the `Line 9` and comment `Line 11` of `user-auth/internal/config/viper/viper.go` file to use the config.yml file.

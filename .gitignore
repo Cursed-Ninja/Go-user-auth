@@ -14,7 +14,7 @@ dist/
 *.py[cod]
 
 # Enviroment variables file
-.env
+*.env
 *.yml
 
 # Log files
