@@ -7,7 +7,7 @@ import (
 func init() {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath("../../internal/config")
+	viper.AddConfigPath("../../etc/secrets")
 
 	if err := viper.ReadInConfig(); err != nil {
 		panic("Error reading config file: " + err.Error())
