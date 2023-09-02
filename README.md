@@ -43,11 +43,3 @@ go run main.go
 3. The routes are defined in the `/user-auth/internal/routes/routes.go` file.
 4. The controllers are defined in the `/user-auth/internal/controllers` directory.
 5. The models are defined in the `/user-auth/internal/models` directory.
-
-## Tests
-
-First open the directory `/user-auth/tests/controllers_tests` directory in the terminal and then run the below command.
-
-```bash
-go test
-```

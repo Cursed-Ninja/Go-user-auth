@@ -29,5 +29,6 @@ func main() {
 	http.Handle("/", r)
 
 	// Listning to Port 8080
+	log.Println("Listening on port 8080")
 	log.Println(http.ListenAndServe(":8080", nil))
 }
