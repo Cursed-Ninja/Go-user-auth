@@ -47,4 +47,4 @@ go run main.go
 
 ## Notes
 
-1. Uncomment the `Line 9` and comment `Line 11` of `user-auth/internal/config/viper/viper.go` file to use the config.yml file.
+1. Uncomment the `Line 8-9` and comment `Line 11-12` of `user-auth/internal/config/viper/viper.go` file to use the config.yml file.
